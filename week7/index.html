@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>React Counter Demo</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+      body { margin: 0; font-family: Arial, Helvetica, sans-serif; }
+      .app-root { min-height: 100vh; display:flex; align-items:center; justify-content:center; }
+      .card { background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); text-align:center }
+      button { cursor:pointer }
+    </style>
+  </head>
+  <body>
+    <div id="root" class="app-root"></div>
+
+    <!-- React + ReactDOM from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <!-- Babel for in-browser JSX (development/demo only) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- App code (JSX) -->
+    <script type="text/babel" data-type="module">
+      const { useState } = React;
+
+      function App() {
+        const [count, setCount] = useState(0);
+        const increment = () => setCount(c => c + 1);
+        const decrement = () => setCount(c => c - 1);
+        const reset = () => setCount(0);
+
+        return (
+          <div className="card" style={{width: '320px'}}>
+            <h1 style={{margin:'0 0 12px'}}>Counter App</h1>
+            <h2 style={{margin:'0 0 16px'}}>{count}</h2>
+            <div style={{display:'flex',justifyContent:'center'}}>
+              <button onClick={increment} style={{ margin: '5px', padding: '10px 14px' }}>Increment</button>
+              <button onClick={decrement} style={{ margin: '5px', padding: '10px 14px' }}>Decrement</button>
+              <button onClick={reset} style={{ margin: '5px', padding: '10px 14px' }}>Reset</button>
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

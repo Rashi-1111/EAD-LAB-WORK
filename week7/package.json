@@ -1,0 +1,10 @@
+{
+  "name": "week7-demo",
+  "version": "1.0.0",
+  "description": "Small React demo for week 7 (CDN + Babel in public for quick preview)",
+  "scripts": {
+    "start": "npx serve public -l 3000"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
