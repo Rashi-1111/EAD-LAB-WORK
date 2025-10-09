@@ -1,0 +1,10 @@
+{
+  "name": "week8-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "npx serve public -l 3000",
+    "build": "echo \"Run a real build system (create-react-app, Vite) to bundle this app.\"",
+    "test": "echo \"Add tests via your preferred framework (Jest, RTL)\""
+  }
+}
