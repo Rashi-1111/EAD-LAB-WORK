@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Educational Website - Campus Life</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      background: #f5f5f7;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Navbar */
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1.5px;
+    }
+
+    /* Carousel */
+    .carousel-inner {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    .carousel-item img {
+      object-fit: cover;
+      height: 450px;
+      width: 100%;
+      filter: brightness(0.85);
+      transition: transform 0.5s ease;
+      border-radius: 15px;
+    }
+    .carousel-item.active img {
+      transform: scale(1.05);
+    }
+    .carousel-caption {
+      bottom: 30px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.65) 80%);
+      border-radius: 15px;
+      padding: 1.5rem 2rem;
+      max-width: 450px;
+      text-align: left;
+    }
+    .carousel-caption h5 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+    .carousel-caption p {
+      font-size: 1.1rem;
+      color: #ddd;
+      margin-bottom: 1rem;
+      line-height: 1.3;
+    }
+    .carousel-caption .btn {
+      font-weight: 600;
+      padding: 0.5rem 1.3rem;
+      border-radius: 50px;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 12px rgb(0 123 255 / 0.5);
+    }
+    .carousel-caption .btn:hover {
+      background-color: #0047b3;
+      box-shadow: 0 6px 18px rgb(0 71 179 / 0.8);
+    }
+    /* Carousel controls bigger */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      width: 3rem;
+      height: 3rem;
+      filter: drop-shadow(0 0 2px rgba(0,0,0,0.3));
+    }
+
+    /* Cards Grid */
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      background: #fff;
+    }
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgb(0 0 0 / 0.2);
+    }
+    .card-img-top {
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      height: 220px;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+    .card:hover .card-img-top {
+      transform: scale(1.07);
+    }
+    .card-body {
+      padding: 1.5rem;
+    }
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+      color: #222;
+    }
+    .card-text {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 1.2rem;
+      line-height: 1.4;
+    }
+    .btn-primary {
+      background-color: #007bff;
+      border: none;
+      font-weight: 600;
+      padding: 0.55rem 1.3rem;
+      border-radius: 50px;
+      box-shadow: 0 4px 12px rgb(0 123 255 / 0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-primary:hover {
+      background-color: #0056b3;
+      box-shadow: 0 7px 20px rgb(0 86 179 / 0.7);
+    }
+
+    @media (max-width: 767px) {
+      .carousel-caption {
+        max-width: 90%;
+        padding: 1rem 1.5rem;
+        font-size: 0.9rem;
+      }
+      .carousel-caption h5 {
+        font-size: 1.3rem;
+      }
+      .carousel-caption p {
+        font-size: 0.85rem;
+      }
+      .card-img-top {
+        height: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">EduCampus</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav fw-semibold">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Departments</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contact</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Carousel + Cards Section -->
+<div class="container my-5">
+  <!-- Carousel -->
+  <div id="campusCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="4000">
+    <div class="carousel-inner rounded shadow-sm">
+      <div class="carousel-item active">
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80" alt="Campus Students Studying" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Vibrant Study Spaces</h5>
+          <p>Comfortable and collaborative areas for all students.</p>
+          <a href="#" class="btn btn-primary btn-sm">Explore Spaces</a>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="images/image.png" alt="Science Lab" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Innovative Science Labs</h5>
+          <p>Cutting-edge equipment for breakthrough research.</p>
+          <a href="#" class="btn btn-primary btn-sm">Discover Labs</a>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="images/image copy 2.png" alt="Outdoor Sports" />
+        <div class="carousel-caption d-none d-md-block">
+          <h5>Energetic Sports Life</h5>
+          <p>State-of-the-art facilities to stay active and fit.</p>
+          <a href="#" class="btn btn-primary btn-sm">Join Activities</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#campusCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#campusCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="row mt-5 g-4">
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="images/image copy 4.png" class="card-img-top" alt="Library" />
+        <div class="card-body">
+          <h5 class="card-title">Library</h5>
+          <p class="card-text">Access a vast range of books, journals, and online resources to aid your studies.</p>
+          <a href="#" class="btn btn-primary btn-sm">Learn More</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="images/image copy 3.png" class="card-img-top" alt="Labs" />
+        <div class="card-body">
+          <h5 class="card-title">Labs</h5>
+          <p class="card-text">Experience hands-on learning with our modern computer and science labs.</p>
+          <a href="#" class="btn btn-primary btn-sm">Discover Labs</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm">
+        <img src="images/image copy 5.png" class="card-img-top" alt="Sports" />
+        <div class="card-body">
+          <h5 class="card-title">Sports</h5>
+          <p class="card-text">Join various sports teams and keep fit with our outstanding sports facilities.</p>
+          <a href="#" class="btn btn-primary btn-sm">Get Active</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
