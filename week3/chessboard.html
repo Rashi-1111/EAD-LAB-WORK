@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chessboard</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    .controls {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(255,255,255,0.9);
+      padding: 8px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      font-family: Arial, sans-serif;
+      z-index: 10;
+    }
+
+    .chessboard {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(40px, 10vmin));
+      grid-auto-rows: minmax(40px, 10vmin);
+      border: 4px solid #333;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      width: calc(min(80vmin, 640px));
+      height: calc(min(80vmin, 640px));
+      max-width: 100%;
+    }
+
+    .cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 48px;
+      font-family: "Segoe UI Symbol", "Arial Unicode MS", sans-serif;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .white {
+      background-color: #f0d9b5;
+    }
+
+    .black {
+      background-color: #b58863;
+    }
+
+    .cell:hover {
+      outline: 3px solid rgba(255,255,0,0.25);
+      transform: scale(1.02);
+      transition: transform 120ms ease, outline 120ms ease;
+      z-index: 2;
+    }
+
+    .cell.selected {
+      box-shadow: inset 0 0 0 4px rgba(0,128,255,0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <label for="sizeRange">Board size: <span id="sizeLabel">8</span>x<span id="sizeLabel2">8</span></label>
+    <input id="sizeRange" type="range" min="4" max="12" value="8" />
+  </div>
+
+  <div class="chessboard" id="board">
+    <!-- Row 1 (Black pieces) -->
+    <div class="cell white">&#9820;</div>
+    <div class="cell black">&#9822;</div>
+    <div class="cell white">&#9821;</div>
+    <div class="cell black">&#9819;</div>
+    <div class="cell white">&#9818;</div>
+    <div class="cell black">&#9821;</div>
+    <div class="cell white">&#9822;</div>
+    <div class="cell black">&#9820;</div>
+
+    <!-- Row 2 (Black pawns) -->
+    <div class="cell black">&#9823;</div>
+    <div class="cell white">&#9823;</div>
+    <div class="cell black">&#9823;</div>
+    <div class="cell white">&#9823;</div>
+    <div class="cell black">&#9823;</div>
+    <div class="cell white">&#9823;</div>
+    <div class="cell black">&#9823;</div>
+    <div class="cell white">&#9823;</div>
+
+    <!-- Rows 3–6 (empty) -->
+    <!-- Row 3 -->
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+
+    <!-- Row 4 -->
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+
+    <!-- Row 5 -->
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+
+    <!-- Row 6 -->
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+    <div class="cell black"></div>
+    <div class="cell white"></div>
+
+    <!-- Row 7 (White pawns) -->
+    <div class="cell white">&#9817;</div>
+    <div class="cell black">&#9817;</div>
+    <div class="cell white">&#9817;</div>
+    <div class="cell black">&#9817;</div>
+    <div class="cell white">&#9817;</div>
+    <div class="cell black">&#9817;</div>
+    <div class="cell white">&#9817;</div>
+    <div class="cell black">&#9817;</div>
+
+    <!-- Row 8 (White pieces) -->
+    <div class="cell black">&#9814;</div>
+    <div class="cell white">&#9816;</div>
+    <div class="cell black">&#9815;</div>
+    <div class="cell white">&#9813;</div>
+    <div class="cell black">&#9812;</div>
+    <div class="cell white">&#9815;</div>
+    <div class="cell black">&#9816;</div>
+    <div class="cell white">&#9814;</div>
+  </div>
+</body>
+  <script>
+    (function(){
+      const board = document.getElementById('board');
+      const sizeRange = document.getElementById('sizeRange');
+      const sizeLabel = document.getElementById('sizeLabel');
+      const sizeLabel2 = document.getElementById('sizeLabel2');
+
+      // Make cells toggle 'selected' on click
+      board.addEventListener('click', (e) => {
+        const cell = e.target.closest('.cell');
+        if (!cell || !board.contains(cell)) return;
+        cell.classList.toggle('selected');
+      });
+
+      // Rebuild board when size changes, preserving piece unicode if present
+      function rebuildBoard(n) {
+        sizeLabel.textContent = n;
+        sizeLabel2.textContent = n;
+        // Gather current pieces (left-to-right top-to-bottom)
+        const pieces = Array.from(board.querySelectorAll('.cell')).map(c => c.innerHTML);
+        board.innerHTML = '';
+        board.style.gridTemplateColumns = `repeat(${n}, minmax(40px, 10vmin))`;
+        board.style.gridAutoRows = `minmax(40px, 10vmin)`;
+        for (let r = 0; r < n; r++) {
+          for (let c = 0; c < n; c++) {
+            const i = r * n + c;
+            const isWhite = (r + c) % 2 === 0;
+            const cell = document.createElement('div');
+            cell.className = 'cell ' + (isWhite ? 'white' : 'black');
+            cell.innerHTML = pieces[i] || '';
+            board.appendChild(cell);
+          }
+        }
+      }
+
+      sizeRange.addEventListener('input', (e) => {
+        rebuildBoard(Number(e.target.value));
+      });
+
+      // Init
+      rebuildBoard(Number(sizeRange.value));
+    })();
+  </script>
+
+</body>
+</html>
