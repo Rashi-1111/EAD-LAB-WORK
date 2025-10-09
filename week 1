@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resume - Rashi Kaur</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9fafb;
+      color: #222;
+    }
+    h1 {
+      text-align: center;
+      color: #1f2937;
+    }
+    h2 {
+      color: #374151;
+      border-bottom: 2px solid #d1d5db;
+      padding-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f3f4f6;
+    }
+    ul {
+      list-style-type: square;
+    }
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Rashi Kaur</h1>
+
+  <h2>Contact Information</h2>
+  <p>
+    📧 Email: <a href="mailto:rashikaur@example.com">rashikaur@example.com</a><br>
+    📱 Phone: <a href="tel:+919876543210">+91-9876543210</a><br>
+    🌐 LinkedIn: <a href="https://www.linkedin.com/in/rashikaur" target="_blank">linkedin.com/in/rashikaur</a><br>
+    💻 GitHub: <a href="https://github.com/rashikaur" target="_blank">github.com/rashikaur</a>
+  </p>
+
+  <h2>About Me</h2>
+  <p>
+    I am a passionate Computer Science student and journalist at Transcendent CBIT, currently working under the Soft Computing Research Society (SCRS).
+    I am deeply interested in <strong>Machine Learning, Web Development, Cybersecurity, and UI/UX Design</strong>.
+    I aim to build meaningful digital platforms that promote cultural heritage, sustainability, and local empowerment.
+  </p>
+
+  <h2>Education</h2>
+  <table>
+    <tr>
+      <th>Degree</th>
+      <th>Institution</th>
+      <th>Year</th>
+    </tr>
+    <tr>
+      <td>B.Tech in Computer Science</td>
+      <td>CBIT (Chaitanya Bharathi Institute of Technology)</td>
+      <td>2022 - 2026</td>
+    </tr>
+    <tr>
+      <td>Higher Secondary</td>
+      <td>Intermediate Board, Telangana</td>
+      <td>2020 - 2022</td>
+    </tr>
+  </table>
+
+  <h2>Skills</h2>
+  <ul>
+    <li>Programming: Python, Java, C (Basic)</li>
+    <li>Web Development: HTML, CSS, JavaScript, React</li>
+    <li>Machine Learning: scikit-learn, pandas, numpy, matplotlib</li>
+    <li>Cybersecurity (Kali Linux, VirtualBox, Network Analysis)</li>
+    <li>UI/UX Design: Figma, Canva</li>
+    <li>Version Control: Git & GitHub</li>
+  </ul>
+
+  <h2>Projects</h2>
+  <ul>
+    <li>
+      <strong>Bloom’s Floral</strong> – A creative floral-themed website project integrating design and interactivity for a personalized gifting experience.
+    </li>
+    <li>
+      <strong>Indian Cultural Heritage Platform</strong> – A digital initiative promoting state-wise handloom, handicrafts, and cultural diversity through interactive maps and artisan connectivity.
+    </li>
+    <li>
+      <strong>Machine Learning Internship (SCRS)</strong> – Built ML models and explored data-driven problem-solving using real-world datasets.
+    </li>
+    <li>
+      <strong>Cybersecurity Internship (Ediglobe)</strong> – Worked on vulnerability detection, ethical hacking basics, and secure network configuration.
+    </li>
+  </ul>
+
+  <h2>Certifications</h2>
+  <ul>
+    <li>Web Development – Internshala</li>
+    <li>UI/UX Design – Coursera</li>
+    <li>Machine Learning Internship – SCRS India</li>
+    <li>Cybersecurity Internship – Ediglobe Platform</li>
+  </ul>
+
+  <h2>Languages Known</h2>
+  <ul>
+    <li>English</li>
+    <li>Hindi</li>
+    <li>Punjabi</li>
+  </ul>
+
+</body>
+</html>
