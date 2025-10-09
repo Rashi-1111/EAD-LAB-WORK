@@ -1,0 +1,75 @@
+body {
+    background: #f4f4f4;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+.calculator {
+    background: #4d9baa;
+    padding: 24px 24px;
+    border-radius: 10px;
+    box-shadow: 0 8px 8px rgba(228, 237, 240, 0.1);
+    width: 260px;
+    margin: 70px auto;
+}
+
+.display-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.sparkle-icon {
+    font-size: 1.5em;
+    margin-right: 4px;
+    color: #ffe066;
+    filter: drop-shadow(0 1px 2px #3333);
+}
+
+.calc-label {
+    font-size: .7rem;
+    font-weight: 200;
+    color: #fff;
+    margin-right: 4px;
+    letter-spacing: 0.5px;
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    text-shadow: 0 1px 2px #3333;
+}
+#display {
+    width: 80%;
+    height: 40px;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    text-align: right;
+    padding: 10px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #fff;
+    color: #333;
+}
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    grid-auto-rows: minmax(48px, auto);
+}
+button {
+    padding: 15px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    background: #fffcfc;
+    color: #2d3a4a;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(31, 38, 135, 0.10);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    outline: none;
+}
+button:hover {
+    background: #79919b;
+    transform: translateY(-2px) scale(1.05);
+}
+button:active {
+    background: #4e4f50;
+    transform: scale(0.98);
+}
