@@ -1,0 +1,43 @@
+.password-checker-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 24px;
+  border-radius: 8px;
+  background: #f7f7f7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  text-align: center;
+}
+.password-checker-container input {
+  width: 100%;
+  padding: 10px;
+  margin: 16px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+.strength-label {
+  font-weight: bold;
+  padding: 8px 0;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+.strength-veryweak {
+  color: #fff;
+  background: #d32f2f;
+}
+.strength-weak {
+  color: #fff;
+  background: #f57c00;
+}
+.strength-medium {
+  color: #fff;
+  background: #fbc02d;
+}
+.strength-strong {
+  color: #fff;
+  background: #388e3c;
+}
+.strength-verystrong {
+  color: #fff;
+  background: #1976d2;
+}
