@@ -1,0 +1,131 @@
+import mongoose from 'mongoose';
+
+const studentSchema = new mongoose.Schema({
+  name: { type: String, required: true, trim: true },
+  email: { type: String, required: true, trim: true, unique: true },
+  age: { type: Number },
+  major: { type: String },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Student = mongoose.model('Student', studentSchema);
+export default Student;
+
+
+
+
+
+
+
+
+import Student from '../models/student.model.js';
+
+export async function createStudent(req, res) {
+  try {
+    const { name, email, age, major } = req.body;
+    if (!name || !email) return res.status(400).json({ error: 'name and email are required' });
+
+    const exists = await Student.findOne({ email });
+    if (exists) return res.status(409).json({ error: 'Email already exists' });
+
+    const student = new Student({ name, email, age, major });
+    await student.save();
+    res.status(201).json(student);
+  } catch (err) {
+    console.error('createStudent error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+export async function getStudents(req, res) {
+  try {
+    const students = await Student.find().sort({ createdAt: -1 });
+    res.json(students);
+  } catch (err) {
+    console.error('getStudents error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+export async function getStudentById(req, res) {
+  try {
+    const { id } = req.params;
+    const student = await Student.findById(id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    res.json(student);
+  } catch (err) {
+    console.error('getStudentById error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+export async function updateStudent(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, email, age, major } = req.body;
+    const student = await Student.findById(id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+
+    if (email && email !== student.email) {
+      const exists = await Student.findOne({ email });
+      if (exists) return res.status(409).json({ error: 'Email already in use' });
+    }
+
+    student.name = name ?? student.name;
+    student.email = email ?? student.email;
+    student.age = age ?? student.age;
+    student.major = major ?? student.major;
+
+    await student.save();
+    res.json(student);
+  } catch (err) {
+    console.error('updateStudent error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+export async function deleteStudent(req, res) {
+  try {
+    const { id } = req.params;
+    const student = await Student.findByIdAndDelete(id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    res.json({ message: 'Student deleted' });
+  } catch (err) {
+    console.error('deleteStudent error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+import { Router } from 'express';
+import {
+  createStudent,
+  getStudents,
+  getStudentById,
+  updateStudent,
+  deleteStudent
+} from '../controllers/student.controller.js';
+import { verifyToken } from '../middlewares/verifyToken.js';
+
+const router = Router();
+
+// Public: list & get
+router.get('/', getStudents);
+router.get('/:id', getStudentById);
+
+// Protected: create, update, delete
+router.post('/', verifyToken, createStudent);
+router.put('/:id', verifyToken, updateStudent);
+router.delete('/:id', verifyToken, deleteStudent);
+
+export default router;
