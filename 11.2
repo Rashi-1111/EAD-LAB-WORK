@@ -1,0 +1,286 @@
+JWT Lab (Node.js + Express)
+A hands‑on, step‑by‑step lab to learn JSON Web Tokens (JWT) for authentication.
+________________________________________
+1) What & Why (2 minutes)
+JWT = JSON Web Token used to prove identity between client and server. - Compact string with 3 parts: header.payload.signature (Base64URL-encoded) - Server issues token after login; client sends it in Authorization: Bearer <token> header for protected APIs.
+Header: algorithm & type, e.g. { alg: "HS256", typ: "JWT" }
+Payload: claims (user id, role, exp, iat)
+Signature: HMACSHA256( base64url(header) + “.” + base64url(payload), secret )
+________________________________________
+2) Learning Outcomes
+By the end, students can: - Explain the 3 parts of a JWT and typical claims (sub, iat, exp) - Implement login that returns a JWT with expiry - Protect routes using a verifyToken middleware - Test auth flow in Postman
+________________________________________
+3) Prerequisites
+•	Node.js 18+ and npm
+•	VS Code (or any editor)
+•	Postman / Thunder Client / curl
+________________________________________
+4) Project Setup (10 minutes)
+# 1) Create project
+mkdir jwt-lab && cd jwt-lab
+
+# 2) Initialize & install deps
+npm init -y
+npm i express jsonwebtoken bcryptjs dotenv cors
+npm i -D nodemon
+
+# 3) Add a dev script in package.json
+#   "scripts": {
+#     "dev": "nodemon src/server.js"
+#   }
+  
+# 4) add following in package.json
+#	{ "type": "module" }
+# 4) Create folders
+mkdir src src/routes src/middlewares src/utils
+note: npm i express jsonwebtoken bcryptjs dotenv cors
+This installs 5 packages, each serving a specific purpose in JWT-based authentication.
+Package	Purpose	Why it’s Needed in JWT Lab
+express	Web framework for Node.js	To create our REST APIs like /login, /register, /profile
+jsonwebtoken	Handles JWT creation and verification	Used for jwt.sign() (to generate tokens) and jwt.verify() (to validate tokens)
+bcryptjs	For password hashing	We never store plain passwords — bcryptjs hashes them securely before saving
+dotenv	Loads environment variables from .env file	We use .env to store secrets like JWT_SECRET, so we don’t hardcode them
+cors	Enables Cross-Origin Resource Sharing	Allows frontend (like React app or Postman) to access our API from another origin
+
+
+
+________________________________________
+5) Environment Variables
+Create .env at project root:
+PORT=4000
+# Generate a long random secret once (do NOT commit to Git)
+# In a terminal: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+JWT_SECRET=replace_with_a_long_random_string
+JWT_EXPIRES_IN=15m
+Create src/utils/env.js to load env safely:
+import dotenv from 'dotenv';
+dotenv.config();
+
+export const env = {
+  PORT: process.env.PORT || 4000,
+  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN || '15m',
+};
+
+if (!env.JWT_SECRET) {
+  console.error('Missing JWT_SECRET in .env');
+  process.exit(1);
+}
+Note: This lab uses in-memory storage for users to keep things simple. In a real app, use a database (e.g., MongoDB + Mongoose or PostgreSQL + Prisma).
+________________________________________
+6) Minimal Express App
+src/server.js
+import express from 'express';
+import cors from 'cors';
+import { env } from './utils/env.js';
+import authRouter from './routes/auth.routes.js';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ message: 'JWT Lab API is running' });
+});
+
+app.use('/api/auth', authRouter);
+
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+app.listen(env.PORT, () => {
+  console.log(`Server listening on http://localhost:${env.PORT}`);
+});
+________________________________________
+7) Auth Middleware (Protect Routes)
+src/middlewares/verifyToken.js
+import jwt from 'jsonwebtoken';
+import { env } from '../utils/env.js';
+
+export function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ error: 'Missing Authorization header' });
+
+  const [scheme, token] = authHeader.split(' ');
+  if (scheme !== 'Bearer' || !token) {
+    return res.status(401).json({ error: 'Invalid Authorization format. Use Bearer <token>' });
+  }
+
+  try {
+    const payload = jwt.verify(token, env.JWT_SECRET);
+    req.user = payload; // e.g., { sub, email, iat, exp }
+    next();
+  } catch (err) {
+    console.error('JWT verify error:', err.message);
+    return res.status(401).json({ error: 'Invalid or expired token' });
+  }
+}
+________________________________________
+8) Auth Routes (Register, Login, Protected)
+src/routes/auth.routes.js
+import { Router } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { env } from '../utils/env.js';
+import { verifyToken } from '../middlewares/verifyToken.js';
+
+const router = Router();
+
+// In-memory users array for the lab
+// Each user: { id, name, email, passwordHash }
+const users = [];
+let idCounter = 1;
+
+function makeToken(user) {
+  // Standard claims: sub (subject), email, iat, exp (set by sign options)
+  const payload = { sub: user.id, email: user.email, name: user.name };
+  return jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
+}
+
+// @route   POST /api/auth/register
+// @body    { name, email, password }
+router.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) return res.status(400).json({ error: 'name, email, password are required' });
+
+    const exists = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (exists) return res.status(409).json({ error: 'Email already registered' });
+
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = { id: idCounter++, name, email, passwordHash };
+    users.push(user);
+
+    const token = makeToken(user);
+    res.status(201).json({
+      message: 'Registered successfully',
+      token,
+      user: { id: user.id, name: user.name, email: user.email }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// @route   POST /api/auth/login
+// @body    { email, password }
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'email and password are required' });
+
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+
+    const token = makeToken(user);
+    res.json({
+      message: 'Logged in',
+      token,
+      user: { id: user.id, name: user.name, email: user.email }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// @route   GET /api/auth/profile (protected)
+router.get('/profile', verifyToken, (req, res) => {
+  // req.user was set by verifyToken
+  const user = users.find(u => u.id === req.user.sub);
+  if (!user) return res.status(404).json({ error: 'User not found' });
+  res.json({ id: user.id, name: user.name, email: user.email });
+});
+
+export default router;
+________________________________________
+9) Run the Server
+npm run dev
+# Server listening on http://localhost:4000
+________________________________________
+10) Test with Postman / Thunder Client (10 minutes)
+1.	Register
+o	Method: POST
+o	URL: http://localhost:4000/api/auth/register
+o	Body (JSON):
+ 	{
+  "name": "Alice",
+  "email": "alice@example.com",
+  "password": "Pass@1234"
+}
+o	Expect: 201, response includes token.
+2.	Login
+o	Method: POST
+o	URL: http://localhost:4000/api/auth/login
+o	Body (JSON):
+ 	{
+  "email": "alice@example.com",
+  "password": "Pass@1234"
+}
+o	Expect: 200, response includes token.
+3.	Access Protected Route
+o	Method: GET
+o	URL: http://localhost:4000/api/auth/profile
+o	Header: Authorization: Bearer <paste_token_here>
+o	Expect: 200 with user profile JSON.
+4.	Fail Case
+o	Remove/alter token; expect 401 Invalid or expired token.
+________________________________________
+11) Frontend Usage (Fetch example)
+async function getProfile() {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:4000/api/auth/profile', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error('Unauthorized');
+  return await res.json();
+}
+________________________________________
+12) (Optional) Refresh Tokens — Extension Task
+For lab bonus: implement refresh tokens. Idea: issue a short‑lived access token (e.g., 15m) and a long‑lived refresh token (e.g., 7d). Store refresh tokens server‑side (DB or memory for lab) to allow logout/rotation.
+High-level steps: 1. On login/register, issue two tokens: accessToken (15m), refreshToken (7d). 2. Save refreshToken (mapped to user id) in memory / DB. 3. Add POST /api/auth/refresh to verify refresh token and issue a new access token. 4. Add POST /api/auth/logout to invalidate the refresh token (delete from store).
+Sketch (not full code):
+// in auth.routes.js
+const refreshStore = new Set();
+
+function makeRefreshToken(user) {
+  const payload = { sub: user.id };
+  return jwt.sign(payload, env.JWT_SECRET, { expiresIn: '7d' });
+}
+
+// on login/register
+const accessToken = makeToken(user);
+const refreshToken = makeRefreshToken(user);
+refreshStore.add(refreshToken);
+res.json({ accessToken, refreshToken });
+
+router.post('/refresh', (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken || !refreshStore.has(refreshToken)) return res.status(401).json({ error: 'Invalid refresh token' });
+  try {
+    const payload = jwt.verify(refreshToken, env.JWT_SECRET);
+    const user = users.find(u => u.id === payload.sub);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const accessToken = makeToken(user);
+    return res.json({ accessToken });
+  } catch {
+    return res.status(401).json({ error: 'Expired/invalid refresh token' });
+  }
+});
+
+router.post('/logout', (req, res) => {
+  const { refreshToken } = req.body;
+  refreshStore.delete(refreshToken);
+  res.json({ message: 'Logged out' });
+});
+________________________________________
+13) Common Errors & Fixes
+•	JWT expired: renew token (login again or use refresh flow)
+•	Invalid signature: check JWT_SECRET in .env is identical for signing and verifying
+•	Bearer format: must be exactly Authorization: Bearer <token>
+•	CORS errors: ensure app.use(cors()) before routes or configure allowed origins
